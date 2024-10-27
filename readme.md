@@ -3,7 +3,7 @@
 
 ![Banner de ServiceBot](img/image.png)
 
-## Vista Previa
+## Respuestas En tiempo real
 ![Interfaz de ServiceBot](img/respuesta.png)
 
 ## Características ✨
