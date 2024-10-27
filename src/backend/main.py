@@ -122,23 +122,27 @@ class SimpleAgentSystem:
             
         context = "\n".join(self.knowledge_base.values())
         
-        prompt = f"""Como representante de atención al cliente, genera una respuesta profesional 
-        y empática al siguiente correo electrónico:
-        
-        Contexto del negocio: {context}
-        
-        Asunto del correo: {query}
-        Contenido del correo: {email_content}
-        
-        Instrucciones:
-        1. Mantén un tono profesional y amigable
-        2. Aborda todos los puntos mencionados en el correo
-        3. Proporciona soluciones claras y específicas
-        4. Incluye un saludo apropiado y una despedida formal
-        5. Si se requiere seguimiento, indícalo claramente
-        
-        Como un {agent.description}, genera una respuesta completa y útil."""
-        
+        prompt = f"""<prompt>
+            <description>As a customer service representative, generate a professional and empathetic response to the following email.</description>
+            
+            <businessContext>{context}</businessContext>
+            
+            <emailSubject>{query}</emailSubject>
+            <emailContent>{email_content}</emailContent>
+            
+            <instructions>
+                <instruction>Maintain a professional and friendly tone.</instruction>
+                <instruction>Address all points mentioned in the email.</instruction>
+                <instruction>Provide clear and specific solutions.</instruction>
+                <instruction>Include an appropriate greeting and formal closing.</instruction>
+                <instruction>If follow-up is required, indicate it clearly.</instruction>
+            </instructions>
+            
+            <agentRole>{agent.description}</agentRole>
+            
+            <task>Generate a comprehensive and helpful response.</task>
+        </prompt>"""
+      
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="mixtral-8x7b-32768",
