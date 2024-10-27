@@ -69,7 +69,7 @@ class Agent:
     context: str = ""
 
 class SimpleAgentSystem:
-    def __init__(self, groq_api_key: str, email_user: str, email_password: str, email_host: str):
+    def __init__(self, groq_api_key: str, email_user: str, email_password: str, email_host: str, knowledge_base_dir: str = "./knowledge_base"):
         logger.debug(f"Inicializando SimpleAgentSystem con email_user: {email_user}, email_host: {email_host}")
         self.client = Groq(api_key=groq_api_key)
         self.agents = {}
@@ -78,6 +78,8 @@ class SimpleAgentSystem:
         self.email_password = email_password
         self.email_host = email_host
         self.default_agent = None
+        self.knowledge_base_dir = knowledge_base_dir
+        os.makedirs(self.knowledge_base_dir, exist_ok=True)  # Ensure the directory exists
 
     def add_agent(self, name: str, description: str, skills: List[str]):
         logger.debug(f"Añadiendo agente: {name} con habilidades: {skills}")
@@ -145,6 +147,31 @@ class SimpleAgentSystem:
         logger.debug(f"Respuesta generada: {response.choices[0].message.content}")
         return response.choices[0].message.content
 
+    def load_knowledge_base(self):
+        """Carga documentos de conocimiento desde un directorio"""
+        logger.debug(f"Cargando base de conocimiento desde: {self.knowledge_base_dir}")
+        try:
+            for filename in os.listdir(self.knowledge_base_dir):
+                if filename.endswith('.txt'):
+                    with open(os.path.join(self.knowledge_base_dir, filename), 'r', encoding='utf-8') as f:
+                        self.knowledge_base[filename] = f.read()
+                        logger.debug(f"Cargado: {filename}")
+        except FileNotFoundError:
+            logger.warning(f"Directorio '{self.knowledge_base_dir}' no encontrado")
+        except Exception as e:
+            logger.error(f"Error cargando archivos: {str(e)}")
+
+    def save_knowledge_base(self, filename: str, content: str):
+        """Guarda un documento de conocimiento en el directorio de la base de conocimiento"""
+        logger.debug(f"Guardando base de conocimiento en: {os.path.join(self.knowledge_base_dir, filename)}")
+        try:
+            with open(os.path.join(self.knowledge_base_dir, filename), 'w', encoding='utf-8') as f:
+                f.write(content)
+                self.knowledge_base[filename] = content
+                logger.debug(f"Guardado: {filename}")
+        except Exception as e:
+            logger.error(f"Error guardando archivo: {str(e)}")
+
 # Initialize the agent system
 EMAIL_USER = os.getenv("EMAIL_USER", "your-email@gmail.com")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "your-app-password")
@@ -176,6 +203,51 @@ agent_system.add_agent(
     "specialist in sales and product inquiries",
     ["products", "pricing", "promotions"]
 )
+
+agent_system.add_agent(
+    "billing",
+    "specialist in billing and payment issues",
+    ["billing", "payment", "invoices", "charges"]
+)
+
+agent_system.add_agent(
+    "account_management",
+    "specialist in account management and user settings",
+    ["account", "user settings", "profile", "security"]
+)
+
+agent_system.add_agent(
+    "returns_and_refunds",
+    "specialist in handling returns and refunds",
+    ["returns", "refunds", "exchanges", "cancellations"]
+)
+
+agent_system.add_agent(
+    "product_support",
+    "specialist in product-specific support and usage",
+    ["product support", "usage", "features", "tips"]
+)
+
+agent_system.add_agent(
+    "feedback_and_suggestions",
+    "specialist in handling customer feedback and suggestions",
+    ["feedback", "suggestions", "improvements", "comments"]
+)
+
+agent_system.add_agent(
+    "international_support",
+    "specialist in international customer support",
+    ["international", "global", "cross-border", "multilingual"]
+)
+
+agent_system.add_agent(
+    "premium_support",
+    "specialist in providing premium support services",
+    ["premium", "VIP", "exclusive", "priority"]
+)
+
+# Load knowledge base
+agent_system.load_knowledge_base()
 
 # Email processing functions
 def get_emails_from_inbox() -> List[Ticket]:
@@ -280,6 +352,9 @@ async def send_email(email_data: EmailResponse):
         # Here you would typically send the email
         # For now, we'll just return the LLM response
         logger.debug(f"Respuesta generada: {response}")
+        return {"message": "Email processed successfully", "response": response}
+    except Exception as e:
+        logger.error(f"Error en endpoint /api/emails/send: {e}")
         return {"message": "Email processed successfully", "response": response}
     except Exception as e:
         logger.error(f"Error en endpoint /api/emails/send: {e}")
