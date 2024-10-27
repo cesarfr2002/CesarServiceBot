@@ -1,7 +1,7 @@
 # ServiceBot 🚀
 **Una solución inteligente para atención al cliente en tiempo real, diseñada para mejorar la experiencia de los usuarios.**
 
-![Banner de ServiceBot](img/banner.png)
+![Banner de ServiceBot](img/image.png)
 
 ## Vista Previa
 ![Interfaz de ServiceBot](img/respuesta.png)
