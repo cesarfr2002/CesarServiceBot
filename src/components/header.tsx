@@ -2,7 +2,7 @@ import { LayoutDashboard, FileText, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { name: 'Tickets', icon: LayoutDashboard, count: 128, href: '#', current: true },
+  { name: 'Tickets', icon: LayoutDashboard, count: 1, href: '#', current: true },
   { name: 'Templates', icon: FileText, href: '#', current: false },
   { name: 'Sources', icon: Share2, href: '#', current: false },
 ];
