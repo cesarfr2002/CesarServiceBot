@@ -13,7 +13,7 @@
 - 💬 Interfaz fácil de usar.
 
 ## Instalación ⚙️
-1. Clona el repositorio: `git clone https://github.com/usuario/ServiceBot.git`
+1. Clona el repositorio: `git clone https://github.com/cesarfr2002/CesarServiceBot.git`
 2. Navega al directorio: `cd ServiceBot`
 3. Instala las dependencias: `npm install`
 4. Inicia el proyecto: `npm start`
